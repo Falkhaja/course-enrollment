@@ -1,0 +1,21 @@
+---
+title: "Harvard Spring 2021 Course Enrollment"
+author: "Fahad Alkhaja"
+date: "2/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+enrollment <- read_excel("raw_data/class_enrollment_summary_by_term_2-10-2021.xlsx", skip = 3)
+enrollment %>%
+  select("Course Title", "Total") %>%
+  arrange(desc(Total)) %>%
+  drop_na()
+```
+
