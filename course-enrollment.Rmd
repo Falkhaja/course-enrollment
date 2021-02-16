@@ -9,13 +9,33 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(readxl)
+library(janitor)
 ```
 
 ```{r}
 enrollment <- read_excel("raw_data/class_enrollment_summary_by_term_2-10-2021.xlsx", skip = 3)
 enrollment %>%
-  select("Course Title", "Total") %>%
-  arrange(desc(Total)) %>%
-  drop_na()
+  clean_names() %>%
+  drop_na() %>%
+  select(course_title,course_id, course_name, total) -> enrollment_clean
+```
+
+```{r}
+enrollment_clean %>%
+  group_by(course_id, course_title, course_name) %>%
+  summarise(total = sum(total), .groups ="drop") %>%
+  arrange(desc(total)) %>%
+  slice(1:10) %>%
+  ggplot(mapping = aes(x = fct_reorder(course_title, total), y = total)) +
+            geom_col() +
+  coord_flip() +
+  labs(x = "Course Title",
+       y = "# of Students Enrolled",
+       title = "Top 10 Harvard Spring 2021 Student Enrollment",
+       subtitle = "Required courses and intro courses dominate",
+       caption = "Source: Harvard Registrar, Work By: Fahad Alkhaja") +
+  theme_test()
+
+
 ```
 
