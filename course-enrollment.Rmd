@@ -1,7 +1,5 @@
 ---
 title: "Harvard Spring 2021 Course Enrollment"
-author: "Fahad Alkhaja"
-date: "2/11/2021"
 output: html_document
 ---
 
@@ -12,7 +10,12 @@ library(readxl)
 library(janitor)
 ```
 
-```{r}
+```{r, File Read-in}
+# Making sure  to skip the right number of lines is essential. My data got
+# messed up when I didn't have the right skip argument. Cleaning the data is
+# REALLY important also cause it'll make the column names much easier to deal
+# with. The janitor library needs to be installed prior though!
+
 enrollment <- read_excel("raw_data/class_enrollment_summary_by_term_2-10-2021.xlsx", skip = 3)
 enrollment %>%
   clean_names() %>%
@@ -21,12 +24,18 @@ enrollment %>%
 ```
 
 ```{r}
+# Had to look up the reason .groups was necessary, realized its  really needed.
+# When using fct_reorder we have to input the y argument twice one in the x and
+# one in the y. The names were too long so coord_flipped the axes and that made
+# it easier to see the names of the axes.
 enrollment_clean %>%
   group_by(course_id, course_title, course_name) %>%
-  summarise(total = sum(total), .groups ="drop") %>%
+  summarise(total = sum(total),
+            .groups ="drop") %>%
   arrange(desc(total)) %>%
   slice(1:10) %>%
-  ggplot(mapping = aes(x = fct_reorder(course_title, total), y = total)) +
+  ggplot(mapping = aes(x = fct_reorder(course_title, total),
+                       y = total)) +
             geom_col() +
   coord_flip() +
   labs(x = "Course Title",
