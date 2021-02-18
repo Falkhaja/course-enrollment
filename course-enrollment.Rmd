@@ -36,11 +36,13 @@ enrollment_cleaner <- enrollment_clean %>%
   slice(1:10)
 
 enrollment_p <- enrollment_cleaner %>%
-  ggplot(mapping = aes(x = fct_reorder(course_title, total),
-                       y = total)) +
+  ggplot(mapping = aes(x = fct_reorder(course_name, total),
+                       y = total,
+                       fill = "aliceblue")) +
+  guides(fill = FALSE) +
             geom_col() +
   coord_flip() +
-  labs(x = "Course Title",
+  labs(x = "",
        y = "# of Students Enrolled",
        title = "Top 10 Harvard Spring 2021 Student Enrollment",
        subtitle = "Required courses and intro courses dominate",
