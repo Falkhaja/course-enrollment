@@ -28,12 +28,14 @@ enrollment %>%
 # When using fct_reorder we have to input the y argument twice one in the x and
 # one in the y. The names were too long so coord_flipped the axes and that made
 # it easier to see the names of the axes.
-enrollment_clean %>%
+enrollment_cleaner <- enrollment_clean %>%
   group_by(course_id, course_title, course_name) %>%
   summarise(total = sum(total),
             .groups ="drop") %>%
   arrange(desc(total)) %>%
-  slice(1:10) %>%
+  slice(1:10)
+
+enrollment_p <- enrollment_cleaner %>%
   ggplot(mapping = aes(x = fct_reorder(course_title, total),
                        y = total)) +
             geom_col() +
@@ -45,6 +47,11 @@ enrollment_clean %>%
        caption = "Source: Harvard Registrar, Work By: Fahad Alkhaja") +
   theme_test()
 
+enrollment_p
 
+```
+
+```{r Saving Image, message = FALSE}
+ggsave("enrollment.jpg", enrollment_p)
 ```
 
